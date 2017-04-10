@@ -12,15 +12,15 @@ public class News {
     private String mTitle;
 
     /** Thumbnail image of News*/
-    private Image mThumbnail;
+   // private Image mThumbnail;
 
     /** Publishing time of the News*/
     private String mTime;
 
-    public News(String title, Image thumbnail , String time) {
+    public News(String title, String time) {
 
         this.mTitle = title;
-        this.mThumbnail = thumbnail;
+        //this.mThumbnail = thumbnail;
         this.mTime = time;
     }
 
@@ -28,9 +28,9 @@ public class News {
         return mTitle;
     }
 
-    public Image getmThumbnail() {
-        return mThumbnail;
-    }
+//    public Image getmThumbnail() {
+//        return mThumbnail;
+//    }
 
     public String getmTime() {
         return mTime;
