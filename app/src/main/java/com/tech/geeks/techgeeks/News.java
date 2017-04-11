@@ -1,6 +1,5 @@
 package com.tech.geeks.techgeeks;
 
-import android.media.Image;
 
 /**
  * This class represents a News object, which has a title, a thumbnail and time (of publish)
@@ -8,32 +7,38 @@ import android.media.Image;
 
 
 public class News {
-    /** Title of News*/
+    /**
+     * Title of News
+     */
     private String mTitle;
 
-    /** Thumbnail image of News*/
-   // private Image mThumbnail;
+    /**
+     * Thumbnail image of News
+     */
+    private String mThumbnailUrl;
 
-    /** Publishing time of the News*/
-    private String mTime;
-
-    public News(String title, String time) {
+    /**
+     * Publishing time of the News
+     */
+    // private String mTime;
+    public News(String title, String thumbnailUrl) {
 
         this.mTitle = title;
-        //this.mThumbnail = thumbnail;
-        this.mTime = time;
+        this.mThumbnailUrl = thumbnailUrl;
+        //this.mTime = time;
     }
 
     public String getmTitle() {
         return mTitle;
     }
 
-//    public Image getmThumbnail() {
-//        return mThumbnail;
-//    }
-
-    public String getmTime() {
-        return mTime;
+    public String getmThumbnailUrl() {
+        return mThumbnailUrl;
     }
 }
+
+//    public String getmTime() {
+//        return mTime;
+//    }
+//}
 

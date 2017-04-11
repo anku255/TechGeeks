@@ -14,8 +14,9 @@ public class NewsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.news_activity);
 
-        // Get the list of news objects from QueryUtils class
-        ArrayList<News> newsList = QueryUtils.extractNews();
+        // Get the list of news objects by creating an instance of
+        // QueryUtils class and passing the context
+        ArrayList<News> newsList = new QueryUtils(this).extractNews();
 
         // Find a reference to the ListView Layout
         ListView newsListView = (ListView) findViewById(R.id.list);
