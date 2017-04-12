@@ -74,7 +74,7 @@ public class QueryUtils {
                 String thumbnailUrl = fields.getString("thumbnail");
 
                 // Create a new News Object and add it to ArrayList
-                News news = new News(title,thumbnailUrl);
+                News news = new News(title,thumbnailUrl,newsUrl);
                 newsList.add(news);
 
             }

@@ -18,13 +18,19 @@ public class News {
     private String mThumbnailUrl;
 
     /**
+     * URL for the News
+     */
+    private String mNewsUrl;
+
+    /**
      * Publishing time of the News
      */
     // private String mTime;
-    public News(String title, String thumbnailUrl) {
+    public News(String title, String thumbnailUrl, String newsUrl) {
 
         this.mTitle = title;
         this.mThumbnailUrl = thumbnailUrl;
+        this.mNewsUrl = newsUrl;
         //this.mTime = time;
     }
 
@@ -34,6 +40,10 @@ public class News {
 
     public String getmThumbnailUrl() {
         return mThumbnailUrl;
+    }
+
+    public String getmNewsUrl() {
+        return mNewsUrl;
     }
 }
 

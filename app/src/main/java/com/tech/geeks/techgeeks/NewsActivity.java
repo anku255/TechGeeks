@@ -1,7 +1,11 @@
 package com.tech.geeks.techgeeks;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -22,11 +26,32 @@ public class NewsActivity extends AppCompatActivity {
         ListView newsListView = (ListView) findViewById(R.id.list);
 
         // Create a new adapter which takes a list of news objects as input
-        NewsAdapter newsAdapter = new NewsAdapter(this,newsList);
+        final NewsAdapter newsAdapter = new NewsAdapter(this,newsList);
 
         // Set the newsAdapter to newsListView so the
         // list can be populated in the user interface
         newsListView.setAdapter(newsAdapter);
+
+        // Setting onItemClickListener for ListView item
+        // It will send a website Intent to browser to open
+        // the news website
+        newsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                // Get the current News Object
+                News currentNews = newsAdapter.getItem(position);
+
+                // Get the String url from currentNews and create a Uri object from it
+                Uri newsUri = Uri.parse(currentNews.getmNewsUrl());
+
+                // Create a new Intent to view the News Uri
+                Intent websiteIntent = new Intent(Intent.ACTION_VIEW,newsUri);
+
+                // Send the Intent to launch a new Activity
+                startActivity(websiteIntent);
+            }
+        });
 
 
     }
