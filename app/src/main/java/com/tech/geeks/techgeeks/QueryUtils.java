@@ -67,6 +67,9 @@ public class QueryUtils {
                 // Extract the value for key called "webUrl"
                 String newsUrl = currentNews.getString("webUrl");
 
+                // Extract he value for "webPublicationDate"
+                String pulishDate = currentNews.getString("webPublicationDate");
+
                 // Get the JSONObject for key "fields"
                 JSONObject fields = currentNews.getJSONObject("fields");
 
@@ -74,7 +77,7 @@ public class QueryUtils {
                 String thumbnailUrl = fields.getString("thumbnail");
 
                 // Create a new News Object and add it to ArrayList
-                News news = new News(title,thumbnailUrl,newsUrl);
+                News news = new News(title,thumbnailUrl,newsUrl,pulishDate);
                 newsList.add(news);
 
             }

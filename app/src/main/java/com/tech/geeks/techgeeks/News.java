@@ -24,14 +24,17 @@ public class News {
 
     /**
      * Publishing time of the News
+     * It's format is "2017-04-10T12:33:38Z"
      */
-    // private String mTime;
-    public News(String title, String thumbnailUrl, String newsUrl) {
+    private String mPulishDate;
+
+
+    public News(String title, String thumbnailUrl, String newsUrl, String pulishDate) {
 
         this.mTitle = title;
         this.mThumbnailUrl = thumbnailUrl;
         this.mNewsUrl = newsUrl;
-        //this.mTime = time;
+        this.mPulishDate = pulishDate;
     }
 
     public String getmTitle() {
@@ -45,10 +48,11 @@ public class News {
     public String getmNewsUrl() {
         return mNewsUrl;
     }
+
+    public String getmPulishDate() {
+        return mPulishDate;
+    }
 }
 
-//    public String getmTime() {
-//        return mTime;
-//    }
-//}
+
 

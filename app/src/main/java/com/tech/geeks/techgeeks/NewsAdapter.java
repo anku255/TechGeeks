@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,9 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -38,6 +42,7 @@ public class NewsAdapter extends ArrayAdapter<News> {
         ImageView thumbnail;
         String thumbnailUrl;
         Bitmap image;
+        TextView time;
     }
 
     public View getView(int position,View convertView,ViewGroup parent) {
@@ -55,6 +60,7 @@ public class NewsAdapter extends ArrayAdapter<News> {
 
             viewHolder.title = (TextView) listItemView.findViewById(R.id.Title);
             viewHolder.thumbnail = (ImageView) listItemView.findViewById(R.id.thumbnail);
+            viewHolder.time = (TextView) listItemView.findViewById(R.id.time);
             listItemView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) listItemView.getTag();
@@ -64,6 +70,15 @@ public class NewsAdapter extends ArrayAdapter<News> {
         News currentNews = getItem(position);
 
         viewHolder.title.setText(currentNews.getmTitle());
+
+        // Get the publishDate for currentNews
+        String publishDate = currentNews.getmPulishDate();
+
+        // Get the Date in TimeAgo format
+        String formmatedDate = getTimeAgoString(publishDate);
+
+        // Set formattedDate to the time TextView of viewHolder
+        viewHolder.time.setText(formmatedDate);
 
         viewHolder.thumbnailUrl = currentNews.getmThumbnailUrl();
 
@@ -131,5 +146,37 @@ public class NewsAdapter extends ArrayAdapter<News> {
                 viewHolder.thumbnail.setImageBitmap(viewHolder.image);
             }
         }
+    }
+
+    public long getTimeInMillis(String srcDate) {
+        SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
+        Date date;
+        long timeInMilli = 0;
+        try {
+            date = simpleDate.parse(srcDate);
+            timeInMilli = date.getTime();
+        } catch(ParseException e) {
+            e.printStackTrace();
+        }
+
+        return timeInMilli;
+    }
+
+    public String getTimeAgoString(String publishDate)
+    {
+        long publishDateTimeInMilli = getTimeInMillis(publishDate);
+
+        // Creating a date object to get current time in Milli Seconds
+        Date date = new Date();
+        long currentTimeInMill = date.getTime();
+
+        // Call DateUtils.getRelativeTimeSpanString() to get time in
+        // "42 min ago" format
+        String timeAgoString = DateUtils.
+                                getRelativeTimeSpanString(publishDateTimeInMilli,currentTimeInMill,
+                                DateUtils.MINUTE_IN_MILLIS).toString();
+
+        // Return timeAgoString
+        return timeAgoString;
     }
 }
