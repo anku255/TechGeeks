@@ -2,6 +2,7 @@ package com.tech.geeks.techgeeks;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.support.customtabs.CustomTabsIntent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -45,11 +46,14 @@ public class NewsActivity extends AppCompatActivity {
                 // Get the String url from currentNews and create a Uri object from it
                 Uri newsUri = Uri.parse(currentNews.getmNewsUrl());
 
-                // Create a new Intent to view the News Uri
-                Intent websiteIntent = new Intent(Intent.ACTION_VIEW,newsUri);
+                // Use a CustomTabsIntent.Builder to configure CustomTabsIntent.
+                CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
 
-                // Send the Intent to launch a new Activity
-                startActivity(websiteIntent);
+                // call CustomTabsIntent.Builder.build() to create a CustomTabsIntent
+                CustomTabsIntent customTabsIntent = builder.build();
+
+                // launch the desired Url with CustomTabsIntent.launchUrl()
+                customTabsIntent.launchUrl(NewsActivity.this,newsUri);
             }
         });
 
