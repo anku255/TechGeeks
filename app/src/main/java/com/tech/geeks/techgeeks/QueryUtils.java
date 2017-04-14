@@ -8,7 +8,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -33,21 +42,49 @@ public class QueryUtils {
         this.context = context;
     }
 
+
+    /** Query The Guardian Server and return a List of News Objects*/
+    public static List<News> fetchNewsData(String requestUrl) {
+
+        // Create a URL object from  given requestUrl
+        URL url = createUrl(requestUrl);
+
+        // Perform an HttpRequest and get a JSONResponse
+        String jsonResponse = null;
+
+        try {
+            jsonResponse = makeHttpRequest(url);
+        } catch (IOException e) {
+            Log.e(LOG_TAG,"Problem in making HTTP Request",e);
+        }
+
+        // Call extractFeatureFromJson method to parse this JsonResponse and get
+        // a list of News objects
+        List<News> newsList = extractFeatureFromJson(jsonResponse);
+
+        // return the newsList
+        return newsList;
+
+    }
+
+
     /**
-     * Return a list of News Objects that it gets from parsing the JSONResponse
+     *
+     * @param newsJSON JsonResponse that we got from server
+     * @return a list of News Objects that it gets from parsing the JOSNResponse
      */
 
-    public ArrayList<News> extractNews() {
+    public static List<News> extractFeatureFromJson(String newsJSON) {
 
         // Create an empty ArrayList to which we can add News objects
-        ArrayList<News> newsList = new ArrayList<>();
+        List<News> newsList = new ArrayList<>();
 
-        // Try to parse the SAMPLE_JOSN_RESPONSE. If an exception occurs then
+        // Try to parse the newsJSON. If an exception occurs then
         // print the error message to log
 
         try {
-            // Create a JSONObject from the SAMPLE_JSON_RESPONSE
-            JSONObject baseJsonResonse = new JSONObject(SAMPLE_JSON_RESPONSE);
+            // Create a JSONObject from the newsJSON
+            JSONObject baseJsonResonse = new JSONObject(newsJSON);
 
             // Extract the JSONObject associated with the key "response"
             JSONObject response = baseJsonResonse.getJSONObject("response");
@@ -95,9 +132,90 @@ public class QueryUtils {
         return newsList;
     }
 
+    /** Makes an HttpRequest using given URL object and returns the inputStream
+     * in form of a String object
+     */
+
+    private static String makeHttpRequest(URL url) throws IOException {
+
+        String jsonResponse = null;
+
+        // If url is null then return early
+        if(url == null) {
+            return jsonResponse;
+        }
+
+        HttpURLConnection urlConnection = null;
+        InputStream inputStream = null;
+
+        try {
+            urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setReadTimeout(10000 /*in milliseconds*/);
+            urlConnection.setConnectTimeout(15000 /*in milliseconds*/);
+            urlConnection.setRequestMethod("GET");
+            urlConnection.connect();
+
+            // If the request was successful (Response code = 200)
+            // then read the input stream and parse it
+            if(urlConnection.getResponseCode() == 200) {
+                inputStream = urlConnection.getInputStream();
+                jsonResponse = readFromStream(inputStream);
+            }
+            else {
+                Log.e(LOG_TAG,"Error response code: "+ urlConnection.getResponseCode());
+            }
+
+        } catch (IOException e) {
+            Log.e(LOG_TAG,"Problem retrieving JsonResponse from server",e);
+        } finally {
+            if(urlConnection != null) {
+                urlConnection.disconnect();
+            }
+            // closing inputStream may throw IOException
+            // This Exception is handled in makeHttpRequest(String url) method signature
+            if(inputStream != null) {
+                inputStream.close();
+            }
+        }
+
+        return jsonResponse;
+    }
 
 
+    /**
+     *
+     * @param inputStream that we get from HttpUrlConnection
+     * @return inputStream after parsing it to a String
+     * @throws IOException
+     */
+    private static String readFromStream(InputStream inputStream) throws IOException{
+        StringBuilder output = new StringBuilder();
 
+        if(inputStream != null) {
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream, Charset.forName("UTF-8"));
+            // Use BufferedReader to parse input faster
+            BufferedReader reader = new BufferedReader(inputStreamReader);
+            String line = reader.readLine();
+            while (line != null) {
+                output.append(line);
+                line = reader.readLine();
+            }
+        }
+        return output.toString();
+    }
 
+    /**
+     * @return a URL object from given stringUrl
+     */
+    private static URL createUrl(String stringUrl) {
+        URL url = null;
+
+        try {
+            url = new URL(stringUrl);
+        } catch (MalformedURLException e) {
+            Log.e(LOG_TAG,"Failed to create URL Object",e);
+        }
+        return url;
+    }
 
 }
