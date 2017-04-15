@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -101,6 +102,10 @@ public class NewsActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onLoadFinished(Loader<List<News>> loader, List<News> newsList) {
 
+        // Hide the loading indicator after loading has been done
+        ProgressBar loadingIndicator = (ProgressBar) findViewById(R.id.loading_indicator);
+        loadingIndicator.setVisibility(View.GONE);
+
         // set the text "No news found" to emptyTextView
         mEmptyTextView.setText(R.string.no_news_found);
 
@@ -112,6 +117,7 @@ public class NewsActivity extends AppCompatActivity implements LoaderManager.Loa
         if( !newsList.isEmpty() && newsList !=null ) {
             mNewsAdapter.addAll(newsList);
         }
+        
 
     }
 
