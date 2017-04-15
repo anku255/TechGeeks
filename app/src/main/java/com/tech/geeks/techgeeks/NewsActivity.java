@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,9 @@ public class NewsActivity extends AppCompatActivity implements LoaderManager.Loa
 
     /** ID for News loader, it can be any constant value*/
     public static final int NEWS_LOADER_ID = 1;
+
+    /** Empty TextView for ListView*/
+    TextView mEmptyTextView;
 
 
     @Override
@@ -70,6 +74,14 @@ public class NewsActivity extends AppCompatActivity implements LoaderManager.Loa
             }
         });
 
+        // Set the emptyTextView for the newsListView
+        // First get a reference to TextView defined in layout file
+        mEmptyTextView = (TextView) findViewById(R.id.empty_view);
+
+        // Set this emptyTextView to newsListView
+        newsListView.setEmptyView(mEmptyTextView);
+
+
         // Get an instance of LoaderManager to manage loaders
         LoaderManager loaderManager = getLoaderManager();
 
@@ -88,6 +100,9 @@ public class NewsActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(Loader<List<News>> loader, List<News> newsList) {
+
+        // set the text "No news found" to emptyTextView
+        mEmptyTextView.setText(R.string.no_news_found);
 
         // Clear the mNewsAdapter from any previous newsList
         mNewsAdapter.clear();
