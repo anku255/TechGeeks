@@ -3,4 +3,12 @@
 
     <!-- Text to be shown when there is no item in ListView -->
     <string name="no_news_found">No news found.</string>
+
+    <!-- No internet connection error message -->
+    <string name="no_internet_connection">No internet connection.</string>
+    <!-- Title for night mode menu -->
+    <string name="menu_night_mode">Night Mode</string>
+    <string name="menu_night_mode_auto">Auto</string>
+    <string name="menu_night_mode_day">Day</string>
+    <string name="menu_night_mode_night">Night</string>
 </resources>
