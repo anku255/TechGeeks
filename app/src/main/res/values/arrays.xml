@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Array for setting_section_label-->
+    <string-array name="setting_section_label" >
+        <item>@string/setting_section_Technology</item>
+        <item>@string/setting_section_World</item>
+        <item>@string/setting_section_Sport</item>
+        <item>@string/setting_section_Science</item>
+        <item>@string/setting_section_Fashion</item>
+    </string-array>
+
+    <!-- Array for setting_section_values-->
+    <string-array name="setting_section_values" >
+        <item>@string/setting_section_technology</item>
+        <item>@string/setting_section_world</item>
+        <item>@string/setting_section_sport</item>
+        <item>@string/setting_section_science</item>
+        <item>@string/setting_section_fashion</item>
+    </string-array>
+
+    <!-- Array for setting_order_by_label-->
+    <string-array name="setting_order_by_label">
+        <item>@string/setting_order_by_recent_label</item>
+        <item>@string/setting_order_by_relevance_label</item>
+    </string-array>
+
+    <!-- Array for setting_order_by_value-->
+    <string-array name="setting_order_by_values">
+        <item>@string/setting_order_by_recent_value</item>
+        <item>@string/setting_order_by_relevance_value</item>
+    </string-array>
+
+</resources>

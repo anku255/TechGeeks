@@ -3,6 +3,9 @@
      xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/action_setting"
+        android:title="@string/settings_title"/>
+    <item
         android:id="@+id/action_night"
         android:title="@string/menu_night_mode"
         app:showAsAction="never">
@@ -19,8 +22,6 @@
                     android:title="@string/menu_night_mode_night"/>
             </group>
         </menu>
-
-
 
     </item>
 

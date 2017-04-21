@@ -1,10 +1,13 @@
 package com.tech.geeks.techgeeks;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
@@ -38,15 +41,12 @@ public class NewsActivity extends AppCompatActivity {
     /**
      * URL for News data from The Guardian API
      */
-    private static final String REQUEST_URL = "https://content.guardianapis.com/search?" +
-            "q=technology&section=technology&order-by=newest&page-size=15&show-fields=thumbnail&api-key=323ed496-4420-4f66-8010-972a9b4aa1fc";
-
+    private static final String REQUEST_URL = "https://content.guardianapis.com/search";
 
     /**
      * Adapter for the list of News
      */
     NewsAdapter mNewsAdapter;
-
 
     /**
      * Empty TextView for ListView
@@ -63,7 +63,6 @@ public class NewsActivity extends AppCompatActivity {
      * List of News Objects
      */
     List<News> newsList = new ArrayList<>();
-
 
 
     @Override
@@ -124,7 +123,7 @@ public class NewsActivity extends AppCompatActivity {
         if (networkInfo != null && networkInfo.isConnected()) {
             // Make JsonObject Request
 
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, REQUEST_URL, null, new Response.Listener<JSONObject>() {
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, getStringUrl(), null, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
 
@@ -195,6 +194,10 @@ public class NewsActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.action_setting:
+                Intent settingsIntent = new Intent(this, SettingsActivity.class);
+                startActivity(settingsIntent);
+                break;
             case R.id.menu_night_mode_day:
                 setNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 break;
@@ -266,6 +269,35 @@ public class NewsActivity extends AppCompatActivity {
             Log.e(LOG_TAG, "Problem parsing the JSONResponse", e);
         }
 
+    }
+
+    private String getStringUrl() {
+
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        String section = sharedPrefs.getString(
+                getString(R.string.setting_section_key),
+                getString(R.string.setting_section_default));
+
+        String page_size = sharedPrefs.getString(
+                getString(R.string.setting_page_size_key),
+                getString(R.string.setting_page_size_default));
+
+        String order_by = sharedPrefs.getString(
+                getString(R.string.setting_order_by_key),
+                getString(R.string.setting_order_by_default));
+
+        Uri baseUri = Uri.parse(REQUEST_URL);
+        Uri.Builder builder = baseUri.buildUpon();
+
+        builder.appendQueryParameter("q",section);
+        builder.appendQueryParameter("section",section);
+        builder.appendQueryParameter("order-by",order_by);
+        builder.appendQueryParameter("page-size",page_size);
+        builder.appendQueryParameter("show-fields","thumbnail");
+        builder.appendQueryParameter("api-key","323ed496-4420-4f66-8010-972a9b4aa1fc");
+
+        return builder.toString();
     }
 
 }

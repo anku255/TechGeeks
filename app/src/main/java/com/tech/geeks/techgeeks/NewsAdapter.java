@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 
@@ -26,14 +25,12 @@ public class NewsAdapter extends ArrayAdapter<News> {
 
     private static final String LOG_TAG = NewsAdapter.class.getName();
 
-    private RequestQueue mRequestQueue = null;
     private ImageLoader mImageLoader;
 
 
     public NewsAdapter(Context context, List<News> news) {
         super(context,0,news);
 
-        mRequestQueue = VolleySingleton.getInstance().getmRequestQueue();
         mImageLoader = VolleySingleton.getInstance().getImageLoader();
     }
 

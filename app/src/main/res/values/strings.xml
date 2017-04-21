@@ -11,4 +11,44 @@
     <string name="menu_night_mode_auto">Auto</string>
     <string name="menu_night_mode_day">Day</string>
     <string name="menu_night_mode_night">Night</string>
+    <string name="title_activity_settings">Settings</string>
+
+
+    <!-- Settings Activity's Title-->
+    <string name="settings_title">Settings</string>
+
+    <!-- Strings for page size settings -->
+    <string name="setting_page_size_default">15</string>
+    <string name="setting_page_size_key" translatable="false">page-size</string>
+    <string name="setting_page_size">Page Size</string>
+
+    <!-- Strings for section settings -->
+    <string name="setting_section">Section</string>
+    <string name="setting_section_key" translatable="false">q</string>
+    <string name="setting_section_default" translatable="false">@string/setting_section_technology</string>
+    <!-- Strings for setting_section_label -->
+    <string name="setting_section_Technology">Technology</string>
+    <string name="setting_section_Science">Science</string>
+    <string name="setting_section_World">World</string>
+    <string name="setting_section_Sport">Sport</string>
+    <string name="setting_section_Fashion">Fashion</string>
+    <!-- Strings for setting_section_values -->
+    <string name="setting_section_technology">technology</string>
+    <string name="setting_section_science">science</string>
+    <string name="setting_section_world">world</string>
+    <string name="setting_section_sport">sport</string>
+    <string name="setting_section_fashion">fashion</string>
+
+
+    <!-- Strings for setting order-by -->
+    <string name="setting_order_by">Order By</string>
+    <string name="setting_order_by_default">newest</string>
+    <string name="setting_order_by_key" translatable="false">order-by</string>
+    <!-- Strings for setting_order_by label-->
+    <string name="setting_order_by_recent_label">Most Recent</string>
+    <string name="setting_order_by_relevance_label">Relevance</string>
+    <!-- Strings for setting_order_by values -->
+    <string name="setting_order_by_recent_value">newest</string>
+    <string name="setting_order_by_relevance_value">relevance</string>
+
 </resources>
