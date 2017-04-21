@@ -5,15 +5,22 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent">
 
-
-    <!-- Layout for a list of News-->
-    <ListView
-        android:id="@+id/list"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
+    <!-- Swipe To Refresh Widget for ListView-->
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipeToRefresh"
         android:layout_height="match_parent"
-        android:divider="@null"
-        android:dividerHeight="0dp"/>
+        android:layout_width="match_parent">
+
+        <!-- Layout for a list of News-->
+        <ListView
+            android:id="@+id/list"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@null"
+            android:dividerHeight="0dp"/>
+    </android.support.v4.widget.SwipeRefreshLayout>
+
 
     <!-- Empty TextView to be shown when there is no item in ListView -->
     <TextView

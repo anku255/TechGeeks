@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.customtabs.CustomTabsIntent;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
@@ -33,7 +34,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NewsActivity extends AppCompatActivity {
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
+
+public class NewsActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     // Log tag for log messages
     private static final String LOG_TAG = NewsActivity.class.getName();
@@ -46,23 +49,28 @@ public class NewsActivity extends AppCompatActivity {
     /**
      * Adapter for the list of News
      */
-    NewsAdapter mNewsAdapter;
+    private NewsAdapter mNewsAdapter;
 
     /**
      * Empty TextView for ListView
      */
-    TextView mEmptyTextView;
+    private TextView mEmptyTextView;
 
     /**
      * RequestQueue for Volley
      * Using VolleySingleton class to initialize it
      */
-    RequestQueue mRequestQueue = VolleySingleton.getInstance().getmRequestQueue();
+    private RequestQueue mRequestQueue = VolleySingleton.getInstance().getmRequestQueue();
 
     /**
      * List of News Objects
      */
-    List<News> newsList = new ArrayList<>();
+    private List<News> newsList = new ArrayList<>();
+
+    /**
+     * SwipeToRefresh Layout
+     */
+    private SwipeRefreshLayout mSwipeToRefresh ;
 
 
     @Override
@@ -112,59 +120,45 @@ public class NewsActivity extends AppCompatActivity {
         // Set this emptyTextView to newsListView
         newsListView.setEmptyView(mEmptyTextView);
 
-        // Check for Network connection before initialzing loader
-        // First get a reference to ConnectivityManager class
-        ConnectivityManager cnnMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        // Call makeNetowrkRequest function to make JsonObjectRequest and update data
+        makeNetWorkRequest();
 
-        // Get details of the currently active data network
-        NetworkInfo networkInfo = cnnMgr.getActiveNetworkInfo();
+         mSwipeToRefresh = (SwipeRefreshLayout) findViewById(R.id.swipeToRefresh);
+        mSwipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Clear the Adapter
+                mNewsAdapter.clear();
 
-        // if there is network connection then fetch data
-        if (networkInfo != null && networkInfo.isConnected()) {
-            // Make JsonObject Request
+                // Hide EmptyTextView
+                mEmptyTextView.setVisibility(View.GONE);
+                // On Refresh call makeNetWorkRequest() function again
+                makeNetWorkRequest();
+            }
+        });
 
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, getStringUrl(), null, new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
+        // Obtain a reference to the SharedPreferences file for this app
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        // And register to be notified of preference changes
+        // So we know when the user has adjusted the query settings
+        prefs.registerOnSharedPreferenceChangeListener(this);
 
-                    // call AddNewsToList to extract News Objects from jsonResponse
-                    // and add News objects to newsList
-                    AddNewsToList(response);
+    }
 
-                    // Hide the loading indicator after loading has been done
-                    ProgressBar loadingIndicator = (ProgressBar) findViewById(R.id.loading_indicator);
-                    loadingIndicator.setVisibility(View.GONE);
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        // Clear the adapter
+        mNewsAdapter.clear();
 
-                    // set the text "No news found" to emptyTextView
-                    mEmptyTextView.setText(R.string.no_news_found);
+        // Hide the emptyTextView
+        mEmptyTextView.setVisibility(View.GONE);
 
-                    Log.v(LOG_TAG, "Notifying for data change");
-                    // notify adapter that dataSet has been changed
-                    mNewsAdapter.notifyDataSetChanged();
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
+        // Show the loading Indicator
+        ProgressBar loadingIndicator = (ProgressBar) findViewById(R.id.loading_indicator);
+        loadingIndicator.setVisibility(View.VISIBLE);
 
-                    Log.e(LOG_TAG, "Error in making JsonObjectResponse", error);
-                    // set the text "No news found" to emptyTextView
-                    mEmptyTextView.setText(R.string.no_news_found);
-
-                }
-            });
-
-            // Add jsonObjectRequest to RequestQueue
-            mRequestQueue.add(jsonObjectRequest);
-
-        } else {
-            // Otherwise display error
-            // First, hide the loading indicator so that error will be visible
-            ProgressBar loadingIndicator = (ProgressBar) findViewById(R.id.loading_indicator);
-            loadingIndicator.setVisibility(View.GONE);
-
-            // Set the text of emptyTextView to "No internet connection"
-            mEmptyTextView.setText(R.string.no_internet_connection);
-        }
+        // makeNetworkRequest to fetch new data
+        makeNetWorkRequest();
 
     }
 
@@ -299,5 +293,71 @@ public class NewsActivity extends AppCompatActivity {
 
         return builder.toString();
     }
+
+    private void makeNetWorkRequest() {
+
+
+        // Check for Network connection before initialzing loader
+        // First get a reference to ConnectivityManager class
+        ConnectivityManager cnnMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        // Get details of the currently active data network
+        NetworkInfo networkInfo = cnnMgr.getActiveNetworkInfo();
+
+        // if there is network connection then fetch data
+        if (networkInfo != null && networkInfo.isConnected()) {
+            // Make JsonObject Request
+
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, getStringUrl(), null, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+
+                    // call AddNewsToList to extract News Objects from jsonResponse
+                    // and add News objects to newsList
+                    AddNewsToList(response);
+
+                    // Hide the loading indicator after loading has been done
+                    ProgressBar loadingIndicator = (ProgressBar) findViewById(R.id.loading_indicator);
+                    loadingIndicator.setVisibility(View.GONE);
+
+                    // set the text "No news found" to emptyTextView
+                    mEmptyTextView.setText(R.string.no_news_found);
+
+                    Log.v(LOG_TAG, "Notifying for data change");
+                    // notify adapter that dataSet has been changed
+                    mNewsAdapter.notifyDataSetChanged();
+
+                    mSwipeToRefresh.setRefreshing(false);
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                    Log.e(LOG_TAG, "Error in making JsonObjectResponse", error);
+                    // set the text "No news found" to emptyTextView
+                    mEmptyTextView.setText(R.string.no_news_found);
+                    // hide the loading indicator
+                    ProgressBar loadingIndicator = (ProgressBar) findViewById(R.id.loading_indicator);
+                    loadingIndicator.setVisibility(View.GONE);
+
+                }
+            });
+
+            // Add jsonObjectRequest to RequestQueue
+            mRequestQueue.add(jsonObjectRequest);
+
+        } else {
+            // Otherwise display error
+            // First, hide the loading indicator so that error will be visible
+            ProgressBar loadingIndicator = (ProgressBar) findViewById(R.id.loading_indicator);
+            loadingIndicator.setVisibility(View.GONE);
+
+            // Set the text of emptyTextView to "No internet connection"
+            mEmptyTextView.setText(R.string.no_internet_connection);
+        }
+
+
+    }
+
 
 }
