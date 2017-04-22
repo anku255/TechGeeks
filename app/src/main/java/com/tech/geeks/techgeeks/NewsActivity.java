@@ -78,6 +78,8 @@ public class NewsActivity extends AppCompatActivity implements SharedPreferences
         super.onCreate(savedInstanceState);
         setContentView(R.layout.news_activity);
 
+        // Set last used theme
+        setLastUsedTheme();
 
         // Find a reference to the ListView Layout
         ListView newsListView = (ListView) findViewById(R.id.list);
@@ -145,6 +147,14 @@ public class NewsActivity extends AppCompatActivity implements SharedPreferences
 
     }
 
+    private void setLastUsedTheme() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        int THEME_ID = prefs.getInt("NIGHT_MODE_STATUS",AppCompatDelegate.getDefaultNightMode());
+        AppCompatDelegate.setDefaultNightMode(THEME_ID);
+        }
+
+
+
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         // Clear the adapter
@@ -187,6 +197,7 @@ public class NewsActivity extends AppCompatActivity implements SharedPreferences
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         switch (item.getItemId()) {
             case R.id.action_setting:
                 Intent settingsIntent = new Intent(this, SettingsActivity.class);
@@ -207,6 +218,12 @@ public class NewsActivity extends AppCompatActivity implements SharedPreferences
 
     private void setNightMode(@AppCompatDelegate.NightMode int nightMode) {
         AppCompatDelegate.setDefaultNightMode(nightMode);
+        // Saving current Night Mode settings in SharedPref file
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt("NIGHT_MODE_STATUS",AppCompatDelegate.getDefaultNightMode());
+        Log.v(LOG_TAG,"Saving value" + AppCompatDelegate.getDefaultNightMode());
+        editor.apply();
         recreate();
     }
 
