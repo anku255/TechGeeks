@@ -1,13 +1,13 @@
 package com.tech.geeks.techgeeks;
 
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 
 
 public class SettingsActivity extends AppCompatActivity {
@@ -25,6 +25,7 @@ public class SettingsActivity extends AppCompatActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.settings_main);
 
+            // Finding preferences to add summary when the app launches or when SettingsActivity is created
             Preference page_size = findPreference(getString(R.string.setting_page_size_key));
             setSummaryToPreference(page_size);
 
@@ -40,6 +41,8 @@ public class SettingsActivity extends AppCompatActivity {
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
             String value = newValue.toString();
+            // If the preference is a ListPreference then we need to find the current value
+            // and set that as summary
             if(preference instanceof ListPreference) {
                 ListPreference listPreference = (ListPreference) preference;
                 int prefIndex = listPreference.findIndexOfValue(value);
@@ -56,6 +59,9 @@ public class SettingsActivity extends AppCompatActivity {
             return true;
         }
 
+        /**
+         * Sets summary for preference in SettingsActivity
+         */
         private void setSummaryToPreference(Preference preference) {
             preference.setOnPreferenceChangeListener(this);
             SharedPreferences shrdPref = PreferenceManager.getDefaultSharedPreferences(preference.getContext());

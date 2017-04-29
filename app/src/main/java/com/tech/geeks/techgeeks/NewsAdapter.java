@@ -1,7 +1,6 @@
 package com.tech.geeks.techgeeks;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,27 +22,19 @@ import java.util.List;
 
 public class NewsAdapter extends ArrayAdapter<News> {
 
-    private static final String LOG_TAG = NewsAdapter.class.getName();
-
+    /**
+     * ImageLoader from Volley Library
+     */
     private ImageLoader mImageLoader;
 
 
     public NewsAdapter(Context context, List<News> news) {
-        super(context,0,news);
+        super(context, 0, news);
 
         mImageLoader = VolleySingleton.getInstance().getImageLoader();
     }
 
-
-    static class ViewHolder {
-        TextView title;
-        NetworkImageView thumbnail;
-        String thumbnailUrl;
-        Bitmap image;
-        TextView time;
-    }
-
-    public View getView(int position,View convertView,ViewGroup parent) {
+    public View getView(int position, View convertView, ViewGroup parent) {
 
         ViewHolder viewHolder;
 
@@ -51,9 +42,9 @@ public class NewsAdapter extends ArrayAdapter<News> {
         // is null then Inflate a new list item layout
         View listItemView = convertView;
 
-        if(listItemView == null) {
+        if (listItemView == null) {
             listItemView = LayoutInflater.from(getContext()).inflate(
-                    R.layout.news_list_item, parent , false);
+                    R.layout.news_list_item, parent, false);
             viewHolder = new ViewHolder();
 
             viewHolder.title = (TextView) listItemView.findViewById(R.id.Title);
@@ -80,27 +71,15 @@ public class NewsAdapter extends ArrayAdapter<News> {
 
         viewHolder.thumbnailUrl = currentNews.getmThumbnailUrl();
 
-        viewHolder.thumbnail.setImageUrl(viewHolder.thumbnailUrl,mImageLoader);
+        viewHolder.thumbnail.setImageUrl(viewHolder.thumbnailUrl, mImageLoader);
 
         return listItemView;
     }
 
-    public long getTimeInMillis(String srcDate) {
-        SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
-        Date date;
-        long timeInMilli = 0;
-        try {
-            date = simpleDate.parse(srcDate);
-            timeInMilli = date.getTime();
-        } catch(ParseException e) {
-            e.printStackTrace();
-        }
-
-        return timeInMilli;
-    }
-
-    public String getTimeAgoString(String publishDate)
-    {
+    /**
+     * @return date in "time ago" format i.e. relative time span
+     */
+    public String getTimeAgoString(String publishDate) {
         long publishDateTimeInMilli = getTimeInMillis(publishDate);
 
         // Creating a date object to get current time in Milli Seconds
@@ -110,10 +89,36 @@ public class NewsAdapter extends ArrayAdapter<News> {
         // Call DateUtils.getRelativeTimeSpanString() to get time in
         // "42 min ago" format
         String timeAgoString = DateUtils.
-                                getRelativeTimeSpanString(publishDateTimeInMilli,currentTimeInMill,
-                                DateUtils.MINUTE_IN_MILLIS).toString();
+                getRelativeTimeSpanString(publishDateTimeInMilli, currentTimeInMill,
+                        DateUtils.MINUTE_IN_MILLIS).toString();
 
         // Return timeAgoString
         return timeAgoString;
+    }
+
+    /**
+     * @param srcDate news publish date in string format
+     * @return time in milliseconds
+     */
+    public long getTimeInMillis(String srcDate) {
+        SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
+        Date date;
+        long timeInMilli = 0;
+        try {
+            date = simpleDate.parse(srcDate);
+            timeInMilli = date.getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return timeInMilli;
+    }
+
+    // creating a viewHolder to hold all views inside a single class
+    static class ViewHolder {
+        TextView title;
+        NetworkImageView thumbnail;
+        String thumbnailUrl;
+        TextView time;
     }
 }
